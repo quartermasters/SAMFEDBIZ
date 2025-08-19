@@ -53,9 +53,9 @@ We welcome your ideas, code, and feedback! Please read our [contributing guide](
 
 | Persona    | Role/Workflow                                               |
 | ---------- | ----------------------------------------------------------- |
-| Haroon     | BDM: Reviews briefs, leads calls, signs off pilots          |
+| Sumera     | BDM: Reviews briefs, leads calls, signs off pilots          |
 | Sana       | Outreach/Ops: Curates research, manages contacts, schedules |
-| Leadership | Oversight: Delivery, metrics, compliance, IP                |
+| Haroon     | Oversight: Delivery, metrics, compliance, IP                |
 
 **Example Workflow:**
 
