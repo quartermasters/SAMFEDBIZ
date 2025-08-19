@@ -1,0 +1,491 @@
+/**
+ * Hero Section & SFBAI Chatbox Styles
+ * samfedbiz.com - Federal BD Platform
+ * Owner: Quartermasters FZC
+ * Stakeholder: AXIVAI.COM
+ */
+
+/* Hero Section */
+.hero {
+    padding: var(--space-2xl) 0;
+    min-height: 60vh;
+    display: flex;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-2xl);
+    align-items: start;
+    width: 100%;
+}
+
+.hero-content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xl);
+}
+
+.hero-title {
+    font-size: 3rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    line-height: 1.2;
+    margin: 0;
+}
+
+.hero-programs {
+    display: flex;
+    gap: var(--space-md);
+    flex-wrap: wrap;
+}
+
+/* SFBAI Chatbox */
+.sfbai-chatbox {
+    padding: var(--space-lg);
+    max-width: 500px;
+    width: 100%;
+    height: fit-content;
+    min-height: 400px;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+}
+
+.chat-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: var(--space-md);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.chat-header h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--color-primary);
+    margin: 0;
+}
+
+.chat-help {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: rgba(11, 42, 74, 0.1);
+    border: 1px solid rgba(11, 42, 74, 0.2);
+    color: var(--color-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.chat-help:hover {
+    background: rgba(11, 42, 74, 0.2);
+    transform: scale(1.1);
+}
+
+/* Chat Input */
+.chat-input-container {
+    display: flex;
+    gap: var(--space-sm);
+    align-items: center;
+}
+
+.chat-input {
+    flex: 1;
+    padding: var(--space-md);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.8);
+    font-size: 1rem;
+    color: var(--color-primary);
+    transition: all 0.2s ease;
+}
+
+.chat-input::placeholder {
+    color: var(--color-secondary);
+    font-style: italic;
+}
+
+.chat-input:focus {
+    outline: none;
+    border-color: var(--color-accent-positive);
+    background: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.1);
+}
+
+.chat-send {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: var(--color-accent-positive);
+    border: none;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.chat-send:hover {
+    background: #0D9488;
+    transform: scale(1.05);
+}
+
+.chat-send:disabled {
+    background: var(--color-secondary);
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Chat Suggestions */
+.chat-suggestions {
+    display: flex;
+    gap: var(--space-sm);
+    flex-wrap: wrap;
+}
+
+.suggestion-btn {
+    padding: var(--space-sm) var(--space-md);
+    border: 1px solid rgba(11, 42, 74, 0.3);
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.7);
+    color: var(--color-primary);
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.suggestion-btn:hover {
+    background: rgba(255, 255, 255, 0.9);
+    border-color: var(--color-accent-positive);
+    transform: translateY(-1px);
+}
+
+/* Chat Response */
+.chat-response {
+    flex: 1;
+    min-height: 150px;
+    max-height: 300px;
+    overflow-y: auto;
+    padding: var(--space-md);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    scroll-behavior: smooth;
+}
+
+.chat-response:empty::before {
+    content: "Ask SFBAI anything about federal BD programs, research summaries, or outreach strategies...";
+    color: var(--color-secondary);
+    font-style: italic;
+    opacity: 0.7;
+}
+
+/* Chat Messages */
+.chat-message {
+    margin-bottom: var(--space-md);
+    padding: var(--space-md);
+    border-radius: 12px;
+    line-height: 1.5;
+}
+
+.chat-message.user {
+    background: rgba(20, 184, 166, 0.1);
+    border: 1px solid rgba(20, 184, 166, 0.2);
+    margin-left: var(--space-xl);
+}
+
+.chat-message.assistant {
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    margin-right: var(--space-xl);
+}
+
+.chat-message.system {
+    background: rgba(245, 158, 11, 0.1);
+    border: 1px solid rgba(245, 158, 11, 0.2);
+    font-style: italic;
+    text-align: center;
+}
+
+/* Streaming Animation */
+.streaming-dots {
+    display: inline-flex;
+    gap: 4px;
+}
+
+.streaming-dots::after {
+    content: '';
+    animation: streaming 1.5s infinite;
+}
+
+@keyframes streaming {
+    0%, 60%, 100% { content: ''; }
+    20% { content: '.'; }
+    40% { content: '..'; }
+    60% { content: '...'; }
+}
+
+/* Chat Actions */
+.chat-actions {
+    display: flex;
+    gap: var(--space-sm);
+    flex-wrap: wrap;
+    padding-top: var(--space-md);
+    border-top: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.action-btn {
+    padding: var(--space-sm) var(--space-md);
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+}
+
+.action-btn.primary {
+    background: var(--color-accent-positive);
+    color: white;
+}
+
+.action-btn.primary:hover {
+    background: #0D9488;
+    transform: translateY(-1px);
+}
+
+.action-btn.secondary {
+    background: rgba(255, 255, 255, 0.7);
+    color: var(--color-primary);
+    border: 1px solid rgba(11, 42, 74, 0.3);
+}
+
+.action-btn.secondary:hover {
+    background: rgba(255, 255, 255, 0.9);
+    border-color: var(--color-primary);
+}
+
+/* Dashboard Content */
+.dashboard-content {
+    padding: var(--space-2xl) 0;
+}
+
+.dashboard-section {
+    margin-bottom: var(--space-2xl);
+}
+
+.section-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--color-primary);
+    margin-bottom: var(--space-lg);
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+/* Brief Cards Grid */
+.briefs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: var(--space-lg);
+}
+
+.brief-card {
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 16px;
+    padding: var(--space-lg);
+    transition: all 0.3s ease;
+}
+
+.brief-card:hover {
+    background: rgba(255, 255, 255, 0.9);
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(11, 42, 74, 0.15);
+}
+
+.card-header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    margin-bottom: var(--space-md);
+}
+
+.card-icon {
+    width: 20px;
+    height: 20px;
+    color: var(--color-primary);
+}
+
+.card-header h4 {
+    flex: 1;
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--color-primary);
+    margin: 0;
+}
+
+.brief-summary {
+    color: var(--color-secondary);
+    margin-bottom: var(--space-md);
+    line-height: 1.5;
+}
+
+.card-actions {
+    display: flex;
+    gap: var(--space-sm);
+    justify-content: flex-end;
+}
+
+/* Meetings List */
+.meetings-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+}
+
+.meeting-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-lg);
+    padding: var(--space-lg);
+    background: rgba(255, 255, 255, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 12px;
+    transition: all 0.2s ease;
+}
+
+.meeting-item:hover {
+    background: rgba(255, 255, 255, 0.8);
+    transform: translateX(4px);
+}
+
+.meeting-time {
+    font-weight: 600;
+    color: var(--color-primary);
+    min-width: 80px;
+}
+
+.meeting-details {
+    flex: 1;
+}
+
+.meeting-details h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--color-primary);
+    margin: 0 0 var(--space-xs) 0;
+}
+
+.meeting-details p {
+    color: var(--color-secondary);
+    margin: 0;
+    font-size: 0.875rem;
+}
+
+/* Outreach List */
+.outreach-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+}
+
+.outreach-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-lg);
+    padding: var(--space-lg);
+    background: rgba(255, 255, 255, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 12px;
+    transition: all 0.2s ease;
+}
+
+.outreach-item:hover {
+    background: rgba(255, 255, 255, 0.8);
+    transform: translateX(4px);
+}
+
+.outreach-contact {
+    flex: 1;
+}
+
+.outreach-contact h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--color-primary);
+    margin: 0 0 var(--space-xs) 0;
+}
+
+.outreach-contact p {
+    color: var(--color-secondary);
+    margin: 0;
+    font-size: 0.875rem;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .hero-container {
+        grid-template-columns: 1fr;
+        gap: var(--space-xl);
+    }
+    
+    .sfbai-chatbox {
+        max-width: none;
+    }
+}
+
+@media (max-width: 768px) {
+    .hero-title {
+        font-size: 2.5rem;
+    }
+    
+    .hero-programs {
+        justify-content: center;
+    }
+    
+    .briefs-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .meeting-item,
+    .outreach-item {
+        flex-direction: column;
+        align-items: flex-start;
+        text-align: left;
+    }
+    
+    .meeting-time {
+        min-width: auto;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero {
+        padding: var(--space-lg) 0;
+    }
+    
+    .hero-title {
+        font-size: 2rem;
+    }
+    
+    .sfbai-chatbox {
+        padding: var(--space-md);
+        min-height: 350px;
+    }
+    
+    .chat-input {
+        font-size: 16px; /* Prevent zoom on iOS */
+    }
+}

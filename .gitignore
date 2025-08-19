@@ -1,0 +1,101 @@
+# PHP
+/vendor/
+*.log
+*.env
+
+# Node
+node_modules/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Misc
+*.bak
+*.tmp
+
+# Database
+*.sqlite
+*.db
+
+# Composer
+composer.lock
+composer.phar
+
+# Build
+/dist/
+
+# Public assets
+public/js/*.map
+public/styles/*.map# Environment & Security
+.env
+.env.local
+.env.production
+
+# API Keys & Secrets
+secrets/
+keys/
+*.key
+*.pem
+
+# Composer
+vendor/
+composer.lock
+
+# Node modules (if any JS build tools added)
+node_modules/
+npm-debug.log*
+
+# IDE & Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Logs
+logs/
+*.log
+error.log
+access.log
+
+# Temporary files
+tmp/
+temp/
+cache/
+*.tmp
+
+# User uploads (may contain sensitive data)
+uploads/private/
+uploads/research/
+
+# Database dumps
+*.sql
+*.sqlite
+*.db
+
+# Backup files
+*.bak
+*.backup
+
+# Build artifacts
+dist/
+build/
+
+# SFBAI specific
+/database/local_dumps/
+/storage/app/private/

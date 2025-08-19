@@ -1,0 +1,45 @@
+{
+  "project": {
+    "name": "samfedbiz.com",
+    "owner": "Quartermasters FZC",
+    "ai_concierge": "SFBAI",
+    "timezone": "Asia/Dubai",
+    "hosting": "Hostinger Business (shared)",
+    "stack": {
+      "frontend": "HTML5, CSS3, Vanilla JS",
+      "libraries": ["GSAP 3.x", "Lenis (smooth scroll)", "Tabler Icons (inline SVG)"],
+      "backend": "PHP 8.x (no React)",
+      "db": "MySQL/MariaDB (PDO)",
+      "emails": "SMTP via PHPMailer",
+      "integrations": ["Google Calendar (Events)", "Google Drive (Readonly)", "OpenAI + Gemini (server-side only)"]
+    },
+    "principles": [
+      "Mission-first: every feature moves federal BD forward (insight → action)",
+      "Server-side AI only; never expose keys client-side",
+      "Modular program adapters: TLS, OASIS+, SEWP; easily extendable",
+      "2-click to action from SFBAI: Draft Email, Schedule Meeting, Save Note",
+      "Lightweight, printable, WCAG-AA accessible"
+    ]
+  },
+  ...,
+  "deployment": {
+    "structure": {
+      "public": ["index.php", "assets/", "styles/", "js/"],
+      "cron": ["news_scan.php", "solicitations_ingest.php", "brief_build.php", "brief_send.php", "drive_sync.php"],
+      "templates": ["partials/", "components/"]
+    },
+    "cache": {
+      "headers": {"static": "Cache-Control: public, max-age=604800"},
+      "php_output": "Micro-cached where safe"
+    },
+    "footer": {
+      "branding": "All rights are reserved to AXIVAI.COM. The Project is Developed by AXIVAI.COM."
+    }
+  },
+  "definition_of_done": [
+    "All phases pass their review hooks",
+    "WCAG AA, contrast rule, and performance budgets met",
+    "Security checklist complete; no secrets client-side",
+    "Stakeholder sign-off from St. Michael LLC and Quartermasters FZC"
+  ]
+}

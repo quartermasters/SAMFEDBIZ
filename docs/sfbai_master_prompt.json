@@ -1,0 +1,448 @@
+{
+  "project": {
+    "name": "samfedbiz.com",
+    "owner": "Quartermasters FZC",
+    "ai_concierge": "SFBAI",
+    "timezone": "Asia/Dubai",
+    "hosting": "Hostinger Business (shared)",
+    "stack": {
+      "frontend": "HTML5, CSS3, Vanilla JS",
+      "libraries": ["GSAP 3.x", "Lenis (smooth scroll)", "Tabler Icons (inline SVG)"],
+      "backend": "PHP 8.x (no React)",
+      "db": "MySQL/MariaDB (PDO)",
+      "emails": "SMTP via PHPMailer",
+      "integrations": ["Google Calendar (Events)", "Google Drive (Readonly)", "OpenAI + Gemini (server-side only)"]
+    },
+    "principles": [
+      "Mission-first: every feature moves federal BD forward (insight → action)",
+      "Server-side AI only; never expose keys client-side",
+      "Modular program adapters: TLS, OASIS+, SEWP; easily extendable",
+      "2-click to action from SFBAI: Draft Email, Schedule Meeting, Save Note",
+      "Lightweight, printable, WCAG-AA accessible"
+    ]
+  },
+  "branding_and_ui": {
+    "typography": {
+      "headings": {"family": "Inter", "weight": 700},
+      "body": {"family": "Inter", "weight": [400, 500]},
+      "mono": {"family": "JetBrains Mono", "weight": 400}
+    },
+    "colors": {
+      "primary": "#0B2A4A",
+      "secondary": "#5B708B",
+      "tint": "#CDE7FF",
+      "accent_positive": "#14B8A6",
+      "accent_warning": "#F59E0B",
+      "accent_error": "#F43F5E",
+      "bg": "#FFFFFF",
+      "bg_alt": "#F8FAFC"
+    },
+    "contrast_rule": {
+      "description": "Background and foreground text colors must differ by at least 80 grayscale points (0–255), and satisfy WCAG AA (4.5:1 normal, 3:1 large)",
+      "grayscale_formula": "Y = round(0.299*R + 0.587*G + 0.114*B)",
+      "min_diff": 80
+    },
+    "icons": {
+      "source": "Tabler Icons",
+      "delivery": "Inline SVG only (no emojis)",
+      "usage": {
+        "program_tls": "tabler:shield",
+        "program_oasis": "tabler:layout-grid",
+        "program_sewp": "tabler:device-desktop",
+        "briefs": "tabler:news",
+        "outreach": "tabler:send",
+        "calendar": "tabler:calendar-event",
+        "research": "tabler:book-2",
+        "settings": "tabler:settings"
+      }
+    },
+    "effects": {
+      "gradients": [
+        {"name": "navy-sky", "css": "linear-gradient(135deg, #0B2A4A 0%, #5B708B 30%, #CDE7FF 100%)"},
+        {"name": "emerald-glow", "css": "linear-gradient(135deg, rgba(20,184,166,0.2), rgba(205,231,255,0.2))"}
+      ],
+      "glassmorphism": {
+        "background": "rgba(255,255,255,0.6)",
+        "backdrop_filter": "saturate(180%) blur(16px)",
+        "border": "1px solid rgba(255,255,255,0.35)",
+        "shadow": "0 8px 24px rgba(11,42,74,0.12)",
+        "radius": "16px"
+      },
+      "animations": {
+        "library": "GSAP 3",
+        "hover_tilt": {
+          "description": "Cards/tiles tilt subtly toward cursor and elevate on hover",
+          "max_rotate_deg": 6,
+          "max_translate_px": 6,
+          "easing": "power2.out",
+          "shadow_elevate": true
+        },
+        "reveal": {"type": "staggered fade/slide-up", "duration": 0.6, "stagger": 0.08},
+        "parallax": {"apply_to": ["hero-bg", "program-tiles"], "strength": 0.15}
+      },
+      "scroll": {
+        "library": "Lenis",
+        "behavior": "smooth",
+        "duration": 1.0,
+        "wheel_multiplier": 1.0
+      }
+    }
+  },
+  "information_architecture": {
+    "routes": [
+      "/ (Dashboard with SFBAI hero chat)",
+      "/programs/{code}",
+      "/programs/{code}/holders/{id}",
+      "/programs/{code}/solicitations",
+      "/briefs/{code}/{date}",
+      "/settings"
+    ]
+  },
+  "modules": {
+    "adapter_interface": {
+      "php_interface": {
+        "methods": [
+          {"name": "code", "returns": "tls|oasisplus|sewp"},
+          {"name": "name", "returns": "string"},
+          {"name": "keywords", "returns": "array"},
+          {"name": "listPrimesOrHolders", "returns": "array"},
+          {"name": "fetchSolicitations", "returns": "array"},
+          {"name": "normalize", "params": ["array raw"], "returns": "array {opp_no,title,agency,status,close_date,url}"},
+          {"name": "extraFields", "returns": "array"}
+        ]
+      },
+      "registry": "Associative map {code => Adapter}; Admin can toggle availability"
+    },
+    "tls": {
+      "entities": ["Primes", "OEMs", "Parts", "MicroCatalogs", "Research"],
+      "micro_catalog_builder": {
+        "output": "Single-page HTML (print/PDF-friendly)",
+        "kit_support": true,
+        "exclude_list": ["Noble Supply & Logistics"]
+      }
+    },
+    "oasis_plus": {
+      "entities": ["Holders", "Pools (SB/UR)", "Domains"],
+      "capability_sheets": ["PMO", "Cyber", "Data/AI", "Training"]
+    },
+    "sewp": {
+      "entities": ["Contract Holders", "Groups", "Contract Nos", "NAICS/PSC", "OEM Auths"],
+      "links": ["Ordering Guide", "Marketplace"]
+    },
+    "research_repository": {
+      "drive_sync": true,
+      "ai_summaries": true,
+      "tagging": ["program", "holder", "topic"]
+    },
+    "outreach_meetings": {
+      "contacts": {"tags": ["Prime", "OEM", "Gov"]},
+      "email_drafts": {"length_words": "120-150", "calendar_cta": true},
+      "calendar": {"store_event_id": true, "attach_one_pager": true}
+    },
+    "daily_briefs": {
+      "scan": {"cadence": "hourly"},
+      "build": {"time_local": "06:00"},
+      "send": {"time_local": "06:05", "newsletter": true, "archive": true},
+      "sections": ["Headlines", "Signals & Rumors", "What It Means", "Next Actions"]
+    }
+  },
+  "db_schema": [
+    "programs(id, code, name, is_active)",
+    "holders(id, program_id, name, type, status)",
+    "holder_meta(holder_id, k, v)",
+    "oems(id, name)",
+    "parts(id, oem_id, part_no, short_desc, category)",
+    "prime_catalog(id, holder_id, part_id)",
+    "opportunities(id, program_id, opp_no, title, agency, status, close_date, url)",
+    "opportunity_meta(id, opportunity_id, k, v)",
+    "research_docs(id, drive_file_id, title, program_id, holder_id)",
+    "outreach(id, program_id, holder_id, contact, email, subject, status)",
+    "meetings(id, program_id, holder_id, gcal_event_id, start_iso, end_iso, summary)",
+    "news_items(id, program_id, source, url, title, tag, score)",
+    "daily_briefs(id, program_id, date, html_path)",
+    "subscribers(id, email, status)",
+    "users(id, name, email, role, pass_hash)",
+    "oauth_tokens(id, provider, access_token_enc, refresh_token_enc, expires_at)",
+    "chats(id, user_id, started_at, context_json)",
+    "chat_messages(id, chat_id, role, content, created_at, tokens, model)",
+    "chat_actions(id, chat_id, type, payload_json, created_at)",
+    "notes(id, program_id, holder_id, opportunity_id, author_id, title, body, created_at)"
+  ],
+  "api_endpoints": {
+    "POST /ai/chat": {"body": "{message, context}", "returns": "{response, actions[]}"},
+    "POST /ai/draft_email": {"body": "{holder_id, topic}"},
+    "POST /ai/summarize": {"body": "{doc_id|url}"},
+    "POST /ai/brief": {"body": "{program|all}"},
+    "POST /calendar/create": {"body": "{title, when, attendees[], link?}"},
+    "POST /outreach/send": {"body": "{to, subject, body}"}
+  },
+  "cron_schedule_local": {
+    "news_scan.php": "Hourly at :15",
+    "solicitations_ingest.php": "00:20, 06:20, 12:20, 18:20",
+    "brief_build.php": "06:00",
+    "brief_send.php": "06:05",
+    "drive_sync.php": "01:00, 07:00, 13:00, 19:00"
+  },
+  "environment_variables": [
+    "APP_ENV", "TIMEZONE", "OPENAI_API_KEY", "GEMINI_API_KEY",
+    "GOOGLE_CLIENT_ID", "GOOGLE_CLIENT_SECRET", "GOOGLE_REDIRECT_URI",
+    "SMTP_HOST", "SMTP_USER", "SMTP_PASS"
+  ],
+  "security": {
+    "keys": "Store in hPanel env; never in repo; mask in UI",
+    "oauth": "Encrypt refresh tokens; least-privilege scopes",
+    "auth": "Bcrypt passwords; roles: admin, ops, viewer",
+    "db": "PDO prepared statements; CSRF tokens on POST",
+    "logging": "Redact PII/secrets; log model name + prompt hash",
+    "compliance": [
+      "TLS SKU-level flags for TAA/Berry/ITAR/EAR",
+      "GDPR/CAN-SPAM for subscribers",
+      "NIST 800-171 basics for CUI (no CUI stored in MVP)"
+    ]
+  },
+  "sfbaI_prompts": {
+    "system": "You are SFBAI, a federal BD assistant for TLS/OASIS+/SEWP. Be concise, action-oriented, and compliant-aware.",
+    "outreach_draft": "Write 120–150 words, propose a 15-minute call, reference micro-catalog/capability context.",
+    "doc_summary": "Return: Summary (5 bullets) + Action Items (3 bullets). Avoid speculation; cite doc sections if possible.",
+    "brief_builder": "Aggregate headlines; label Signals & Rumors; add ‘What it means’ and ‘Next actions’ per program."
+  },
+  "ui_interactions": {
+    "gsap_init": {
+      "cdn": "https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js",
+      "selectors": {
+        "reveal": ".reveal",
+        "tilt_cards": ".tilt-card",
+        "parallax": ".parallax"
+      }
+    },
+    "lenis_init": {
+      "cdn": "https://cdn.jsdelivr.net/npm/@studio-freight/lenis/dist/lenis.min.js",
+      "options": {"duration": 1.0, "smoothWheel": true}
+    },
+    "hover_tilt_logic": {
+      "on_mousemove": "Use element bounds to compute rotateX/rotateY; gsap.to with ease power2.out",
+      "on_mouseleave": "Return to neutral (rotate 0 0, translateZ 0)"
+    },
+    "a11y_focus": {
+      "outline": "2px solid #14B8A6",
+      "offset": "2px",
+      "prefers_reduced_motion": "Disable non-essential animations"
+    }
+  },
+  "sectional_workflow": {
+    "sections": [
+      {
+        "key": "dashboard_hero",
+        "goal": "Hero with SFBAI chatbox, program tiles, briefs & meetings preview",
+        "deliverables": ["hero.php", "sfbaI_chat.js", "styles/hero.css"],
+        "tests": [
+          "HTML passes W3C validation",
+          "GSAP reveal animations run without console errors",
+          "Lenis smooth scroll initialized once",
+          "Contrast check >= 80 grayscale points for all text on hero background",
+          "Keyboard focus order logical; chat input accessible"
+        ],
+        "review_hook_id": "gate_dashboard_hero"
+      },
+      {
+        "key": "program_overview",
+        "goal": "Program overview with holders, solicitations, research and inline SFBAI",
+        "deliverables": ["program_overview.php", "styles/program.css", "js/program.js"],
+        "tests": [
+          "Adapters toggle visibility correctly",
+          "Tables sortable/filterable with no layout shift",
+          "Inline SFBAI receives {program} context",
+          "Hover tilt on tiles within 6° max; no motion sickness",
+          "Contrast & WCAG AA pass"
+        ],
+        "review_hook_id": "gate_program_overview"
+      },
+      {
+        "key": "holder_page",
+        "goal": "Holder profile with micro-catalog/capability, outreach & meeting actions",
+        "deliverables": ["holder.php", "styles/holder.css", "js/holder.js", "print.css"],
+        "tests": [
+          "Micro-catalog prints to one page correctly",
+          "Draft Email prefilled with holder & program context",
+          "Schedule Meeting stores gcal_event_id",
+          "Activity log records actions",
+          "Glassmorphism cards meet contrast rule"
+        ],
+        "review_hook_id": "gate_holder_page"
+      },
+      {
+        "key": "solicitations",
+        "goal": "List & detail with AI summary, compliance checklist, next actions",
+        "deliverables": ["solicitations.php", "js/solicitations.js"],
+        "tests": [
+          "Normalize() outputs required fields",
+          "Detail shows AI summary with source links",
+          "/opps slash command returns closing-soon sorted",
+          "No blocking JS on first contentful paint > 2s"
+        ],
+        "review_hook_id": "gate_solicitations"
+      },
+      {
+        "key": "research_docs",
+        "goal": "Drive sync list, preview, summarize to Notes",
+        "deliverables": ["research.php", "js/research.js"],
+        "tests": [
+          "Drive sync lists title/link/mime/modified",
+          "Summaries create Notes with tags",
+          "Search highlights keyword matches",
+          "No PII leaks in logs"
+        ],
+        "review_hook_id": "gate_research"
+      },
+      {
+        "key": "daily_briefs",
+        "goal": "Brief engine build/send/archive with dashboard cards",
+        "deliverables": ["cron/brief_build.php", "cron/brief_send.php", "briefs.php"],
+        "tests": [
+          "Cron timestamps localize to Asia/Dubai",
+          "Archive page shows sections with dates",
+          "Email renders on common clients",
+          "Signals & Rumors clearly labeled"
+        ],
+        "review_hook_id": "gate_briefs"
+      },
+      {
+        "key": "settings_security",
+        "goal": "Admin toggles, OAuth setup status, SMTP, subscriber management",
+        "deliverables": ["settings.php", "js/settings.js"],
+        "tests": [
+          "Env vars not displayed; masked placeholders",
+          "Program toggles persist",
+          "Double opt-in subscribers",
+          "Blacklisted holders (e.g., Noble) excluded in outreach"
+        ],
+        "review_hook_id": "gate_settings"
+      }
+    ]
+  },
+  "quality_gates": {
+    "lint_and_build": {
+      "php": "php -l $(git ls-files '*.php')",
+      "js": "eslint --no-eslintrc --env browser --rule 'no-undef:error' $(git ls-files '*.js')",
+      "css": "stylelint 'styles/**/*.css'",
+      "html": "python -m html5validator --root ."
+    },
+    "automated_checks": {
+      "contrast": "Run contrast_check() on all text/background pairs; fail if grayscale diff < 80 or WCAG AA ratio fails",
+      "a11y": "axe-core run; tab trapping and ARIA roles present for chat",
+      "perf_budget": {"fcp_ms": 2000, "js_total_kb": 250}
+    },
+    "manual_checks": [
+      "Hover tilt feels subtle and responsive (<=6°)",
+      "Lenis not conflicting with keyboard scroll",
+      "No client-side AI keys exposed"
+    ],
+    "contrast_check_function": {
+      "pseudo_code": "function grayDiff(c1,c2){const g=a=>Math.round(0.299*a.r+0.587*a.g+0.114*a.b);return Math.abs(g(c1)-g(c2));}"
+    }
+  },
+  "review_hook_contract": {
+    "name": "Section Gate Review",
+    "input": {
+      "section_key": "string (matches sectional_workflow.sections[].key)",
+      "artifacts": ["paths to changed files"],
+      "test_results": "structured JSON from quality_gates",
+      "notes": "free text"
+    },
+    "output_schema": {
+      "approved": "boolean",
+      "lint_errors": ["{file, line, message}"],
+      "a11y_issues": ["{type, selector, description}"],
+      "contrast_failures": ["{selector, bg, fg, grayscale_diff}"],
+      "security_flags": ["{area, description}"],
+      "perf_findings": ["{metric, value, budget}"],
+      "fixes_applied": ["string"],
+      "next_steps": ["string"]
+    },
+    "policy": "Do not proceed to the next section until approved=true and all blocking issues are resolved."
+  },
+  "phases": [
+    {
+      "name": "Phase 0 – Foundations",
+      "deliverables": ["db migrations", "adapter interfaces", "auth & roles", "env+secrets"],
+      "exit_criteria": [
+        "php -l passes on all files",
+        "roles admin/ops/viewer enforced",
+        "Program registry toggles working",
+        "Secrets only from env"
+      ],
+      "review_hook": "gate_foundations"
+    },
+    {
+      "name": "Phase 1 – TLS MVP",
+      "deliverables": ["TLSAdapter", "primes list", "micro-catalog builder", "outreach compose", "calendar create", "Drive sync"],
+      "exit_criteria": [
+        "Micro-catalog one-pager prints cleanly",
+        "Outreach drafts send via SMTP",
+        "gcal_event_id stored on meeting create"
+      ],
+      "review_hook": "gate_tls_mvp"
+    },
+    {
+      "name": "Phase 2 – Briefs",
+      "deliverables": ["news scan", "brief build", "brief send", "archive"],
+      "exit_criteria": [
+        "Brief email at 06:05 Dubai",
+        "Archive shows timestamps",
+        "Signals & Rumors labeled"
+      ],
+      "review_hook": "gate_briefs_phase"
+    },
+    {
+      "name": "Phase 3 – OASIS+",
+      "deliverables": ["adapter", "holders", "capability sheets", "solicitations"],
+      "exit_criteria": [
+        "Pools/domains visible",
+        "Capability sheets templated"
+      ],
+      "review_hook": "gate_oasis"
+    },
+    {
+      "name": "Phase 4 – SEWP",
+      "deliverables": ["adapter", "holders/groups", "ordering guide links", "capability sheets"],
+      "exit_criteria": [
+        "Groups + contract nos displayed",
+        "Ordering guide shortcuts live"
+      ],
+      "review_hook": "gate_sewp"
+    },
+    {
+      "name": "Phase 5 – Analytics & Polish",
+      "deliverables": ["dashboards", "Telegram optional", "CSV importers", "KPI exports", "A11y polish"],
+      "exit_criteria": [
+        "Perf budgets met",
+        "A11y contrast & keyboard pass",
+        "No console errors across routes"
+      ],
+      "review_hook": "gate_polish"
+    }
+  ],
+  "telemetry": {
+    "engagement": ["daily chats/user", "commands used", "actions taken"],
+    "conversion": ["outreach drafts→sent", "chats→meetings"],
+    "content": ["docs summarized/day", "brief opens/clicks"],
+    "reliability": ["error rate", "avg response latency", "token usage by model"]
+  },
+  "deployment": {
+    "structure": {
+      "public": ["index.php", "assets/", "styles/", "js/"],
+      "cron": ["news_scan.php", "solicitations_ingest.php", "brief_build.php", "brief_send.php", "drive_sync.php"],
+      "templates": ["partials/", "components/"]
+    },
+    "cache": {
+      "headers": {"static": "Cache-Control: public, max-age=604800"},
+      "php_output": "Micro-cached where safe"
+    }
+  },
+  "definition_of_done": [
+    "All phases pass their review hooks",
+    "WCAG AA, contrast rule, and performance budgets met",
+    "Security checklist complete; no secrets client-side",
+    "Stakeholder sign-off from St. Michael LLC and Quartermasters FZC"
+  ]
+}
