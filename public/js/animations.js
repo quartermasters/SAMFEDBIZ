@@ -127,7 +127,9 @@ class SamFedBizAnimations {
         if (this.respectsReducedMotion) return;
 
         const tiltCards = document.querySelectorAll('.tilt-card');
+        const programTiles = document.querySelectorAll('.program-chip, .content-card, .solicitation-item, .research-item');
         
+        // Setup general tilt cards
         tiltCards.forEach(card => {
             this.tiltCards.push(card);
             
@@ -139,6 +141,23 @@ class SamFedBizAnimations {
 
             card.addEventListener('mousemove', (e) => this.handleTiltMove(e, card));
             card.addEventListener('mouseleave', () => this.handleTiltLeave(card));
+        });
+
+        // Setup specific program tiles with enhanced tilt behavior
+        programTiles.forEach(tile => {
+            if (!tile.classList.contains('tilt-card')) {
+                tile.classList.add('tilt-card');
+                this.tiltCards.push(tile);
+            }
+            
+            // Set initial 3D properties for program tiles
+            gsap.set(tile, {
+                transformStyle: 'preserve-3d',
+                transformOrigin: 'center center'
+            });
+
+            tile.addEventListener('mousemove', (e) => this.handleProgramTileMove(e, tile));
+            tile.addEventListener('mouseleave', () => this.handleProgramTileLeave(tile));
         });
     }
 
@@ -182,6 +201,67 @@ class SamFedBizAnimations {
             rotateY: 0,
             translateZ: 0,
             duration: 0.5,
+            ease: "power2.out"
+        });
+    }
+
+    handleProgramTileMove(event, tile) {
+        if (this.respectsReducedMotion) return;
+
+        // Get element bounds for precise calculation
+        const rect = tile.getBoundingClientRect();
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+        
+        // Calculate mouse position relative to tile center
+        const deltaX = event.clientX - centerX;
+        const deltaY = event.clientY - centerY;
+        
+        // Calculate tilt angles based on element bounds (max 6°)
+        const maxTilt = 6;
+        const rotateX = -(deltaY / rect.height) * maxTilt * 2; // Multiply by 2 for more responsive feel
+        const rotateY = (deltaX / rect.width) * maxTilt * 2;
+        
+        // Clamp rotation to max 6°
+        const clampedRotateX = Math.max(-maxTilt, Math.min(maxTilt, rotateX));
+        const clampedRotateY = Math.max(-maxTilt, Math.min(maxTilt, rotateY));
+        
+        // Calculate translation with subtle elevation effect
+        const maxTranslate = 4; // Slightly less than general cards
+        const translateZ = Math.abs(clampedRotateX) + Math.abs(clampedRotateY); // Dynamic elevation
+        
+        // Apply transformation with optimized easing for program tiles
+        gsap.to(tile, {
+            duration: 0.3, // Faster response for program tiles
+            rotateX: clampedRotateX,
+            rotateY: clampedRotateY,
+            translateZ: Math.min(translateZ, maxTranslate),
+            scale: 1.02, // Subtle scale increase
+            ease: "power2.out",
+            transformOrigin: "center center"
+        });
+
+        // Add glowing effect for enhanced interaction feedback
+        if (tile.classList.contains('program-chip')) {
+            gsap.to(tile, {
+                duration: 0.3,
+                boxShadow: '0 8px 32px rgba(20, 184, 166, 0.2)',
+                ease: "power2.out"
+            });
+        }
+    }
+
+    handleProgramTileLeave(tile) {
+        if (this.respectsReducedMotion) return;
+
+        // Return to neutral position with smooth easing
+        gsap.to(tile, {
+            duration: 0.6,
+            rotateX: 0,
+            rotateY: 0,
+            translateZ: 0,
+            scale: 1,
+            boxShadow: '0 4px 16px rgba(11, 42, 74, 0.12)', // Reset to default shadow
             ease: "power2.out"
         });
     }

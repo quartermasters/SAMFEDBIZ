@@ -1,0 +1,27 @@
+# samfedbiz.com Cron Jobs
+# All times in Asia/Dubai timezone
+# Owner: Quartermasters FZC | Stakeholder: AXIVAI.COM
+
+# Set timezone for all cron jobs
+TZ=Asia/Dubai
+
+# News scanning - hourly at :15 minutes
+15 * * * * cd /mnt/d/samfedbiz && /usr/bin/php cron/news_scan.php >> /var/log/samfedbiz/news_scan.log 2>&1
+
+# Solicitations ingestion - 4x daily at :20 minutes (00:20, 06:20, 12:20, 18:20)
+20 0,6,12,18 * * * cd /mnt/d/samfedbiz && /usr/bin/php cron/solicitations_ingest.php >> /var/log/samfedbiz/solicitations_ingest.log 2>&1
+
+# Daily brief building - once daily at 06:00
+0 6 * * * cd /mnt/d/samfedbiz && /usr/bin/php cron/brief_build.php >> /var/log/samfedbiz/brief_build.log 2>&1
+
+# Daily brief sending - once daily at 06:05
+5 6 * * * cd /mnt/d/samfedbiz && /usr/bin/php cron/brief_send.php >> /var/log/samfedbiz/brief_send.log 2>&1
+
+# Google Drive sync - 4x daily (01:00, 07:00, 13:00, 19:00)
+0 1,7,13,19 * * * cd /mnt/d/samfedbiz && /usr/bin/php cron/drive_sync.php >> /var/log/samfedbiz/drive_sync.log 2>&1
+
+# Log rotation - weekly cleanup on Sunday at 02:00
+0 2 * * 0 find /var/log/samfedbiz -name "*.log" -mtime +30 -delete
+
+# Database maintenance - daily at 03:00
+0 3 * * * cd /mnt/d/samfedbiz && /usr/bin/php cron/db_maintenance.php >> /var/log/samfedbiz/db_maintenance.log 2>&1

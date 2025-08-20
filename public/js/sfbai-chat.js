@@ -56,6 +56,9 @@ class SFBAIChat {
         // Set up slash commands
         this.setupSlashCommands();
 
+        // Set up context updates on navigation
+        this.setupContextUpdates();
+
         console.log('✅ SFBAI chat initialized');
     }
 
@@ -119,6 +122,41 @@ class SFBAIChat {
             } else {
                 this.hideSlashCommandHints();
             }
+        });
+    }
+
+    setupContextUpdates() {
+        // Update context when URL changes (for SPAs or hash changes)
+        window.addEventListener('popstate', () => {
+            setTimeout(() => this.updateContext(), 100);
+        });
+
+        // Update context when hash changes
+        window.addEventListener('hashchange', () => {
+            setTimeout(() => this.updateContext(), 100);
+        });
+
+        // Listen for program chip clicks to update context
+        document.addEventListener('click', (e) => {
+            if (e.target.closest('.program-chip')) {
+                const chip = e.target.closest('.program-chip');
+                const program = chip.dataset.program;
+                if (program) {
+                    setTimeout(() => this.updateContext(), 100);
+                }
+            }
+        });
+
+        // Listen for table row clicks that might navigate to detail pages
+        document.addEventListener('click', (e) => {
+            if (e.target.closest('tr[data-holder-id]') || e.target.closest('.holder-link')) {
+                setTimeout(() => this.updateContext(), 500);
+            }
+        });
+
+        // Update context when window gains focus (user might have navigated)
+        window.addEventListener('focus', () => {
+            this.updateContext();
         });
     }
 
@@ -422,21 +460,147 @@ class SFBAIChat {
     updateContext() {
         // Auto-detect context from current page
         const path = window.location.pathname;
+        const search = window.location.search;
         const context = {};
 
-        // Extract program from URL
-        const programMatch = path.match(/\/programs\/([^\/]+)/);
+        // Extract program from URL or query parameter
+        let programMatch = path.match(/\/programs\/([^\/]+)/);
+        if (!programMatch && search) {
+            const urlParams = new URLSearchParams(search);
+            const codeParam = urlParams.get('code');
+            if (codeParam) {
+                programMatch = [null, codeParam];
+            }
+        }
+        
         if (programMatch) {
-            context.program = programMatch[1];
+            const programCode = programMatch[1];
+            context.program = programCode;
+            
+            // Add program-specific context
+            switch(programCode) {
+                case 'tls':
+                    context.program_name = 'Tactical Law Enforcement Support';
+                    context.keywords = ['tactical', 'law enforcement', 'SOE', 'kits', 'equipment'];
+                    context.entity_type = 'primes';
+                    break;
+                case 'oasis+':
+                case 'oasis%2B':
+                    context.program_name = 'OASIS+';
+                    context.keywords = ['professional services', 'IT services', 'consulting', 'pools'];
+                    context.entity_type = 'holders';
+                    break;
+                case 'sewp':
+                    context.program_name = 'SEWP';
+                    context.keywords = ['IT', 'hardware', 'software', 'telecommunications'];
+                    context.entity_type = 'holders';
+                    break;
+            }
         }
 
-        // Extract holder from URL
-        const holderMatch = path.match(/\/holders\/(\d+)/);
+        // Extract holder/prime from URL
+        const holderMatch = path.match(/\/(?:holders|primes)\/(\d+)/);
         if (holderMatch) {
             context.holder_id = parseInt(holderMatch[1]);
+            
+            // Try to get holder name from page
+            const holderNameElement = document.querySelector('.holder-name, .prime-name, h1');
+            if (holderNameElement) {
+                context.holder_name = holderNameElement.textContent.trim();
+            }
+        }
+
+        // Extract document context from research pages
+        const docMatch = path.match(/\/research\/(\d+)/);
+        if (docMatch) {
+            context.document_id = parseInt(docMatch[1]);
+            
+            // Try to get document title from page
+            const docTitleElement = document.querySelector('.research-title, .doc-title, h1');
+            if (docTitleElement) {
+                context.document_title = docTitleElement.textContent.trim();
+            }
+        }
+
+        // Extract solicitation context
+        const oppMatch = path.match(/\/solicitations\/([^\/]+)/);
+        if (oppMatch) {
+            context.opportunity_id = oppMatch[1];
+            
+            // Try to get opportunity title from page
+            const oppTitleElement = document.querySelector('.solicitation-title, .opp-title, h1');
+            if (oppTitleElement) {
+                context.opportunity_title = oppTitleElement.textContent.trim();
+            }
+        }
+
+        // Add page-specific context
+        if (path.includes('/briefs')) {
+            context.page_type = 'briefs';
+            context.keywords = ['intelligence', 'news', 'opportunities', 'market'];
+        } else if (path.includes('/research')) {
+            context.page_type = 'research';
+            context.keywords = ['documents', 'analysis', 'reports', 'summaries'];
+        } else if (path.includes('/outreach')) {
+            context.page_type = 'outreach';
+            context.keywords = ['communications', 'emails', 'meetings', 'calendar'];
+        } else if (path === '/') {
+            context.page_type = 'dashboard';
+            context.keywords = ['overview', 'summary', 'all programs'];
+        }
+
+        // Add timestamp for context freshness
+        context.timestamp = Date.now();
+        context.url = window.location.href;
+
+        // Merge with any existing context from window
+        if (window.sfbaiContext) {
+            Object.assign(context, window.sfbaiContext);
         }
 
         this.setContext(context);
+        
+        // Update UI to reflect context
+        this.updateContextDisplay();
+    }
+
+    updateContextDisplay() {
+        // Update the SFBAI context display in the UI
+        const contextElement = document.querySelector('.sfbai-context');
+        if (!contextElement) return;
+
+        let contextText = '';
+        const ctx = this.currentContext;
+
+        if (ctx.program_name) {
+            contextText = `Program: ${ctx.program_name}`;
+            
+            if (ctx.holder_name) {
+                contextText += ` | ${ctx.entity_type === 'primes' ? 'Prime' : 'Holder'}: ${ctx.holder_name}`;
+            } else if (ctx.document_title) {
+                contextText += ` | Document: ${ctx.document_title.substring(0, 30)}...`;
+            } else if (ctx.opportunity_title) {
+                contextText += ` | Opportunity: ${ctx.opportunity_title.substring(0, 30)}...`;
+            }
+        } else if (ctx.page_type) {
+            contextText = `Page: ${ctx.page_type.charAt(0).toUpperCase() + ctx.page_type.slice(1)}`;
+        } else {
+            contextText = 'Federal BD Intelligence';
+        }
+
+        contextElement.textContent = contextText;
+
+        // Update chat input placeholder based on context
+        const chatInput = document.getElementById('chat-input');
+        if (chatInput && ctx.program_name) {
+            chatInput.placeholder = `Ask about ${ctx.program_name}...`;
+        }
+
+        // Update help text based on context
+        const helpText = document.getElementById('chat-help-text');
+        if (helpText && ctx.program) {
+            helpText.textContent = `Try: "/brief ${ctx.program}" or "Show me recent opportunities"`;
+        }
     }
 
     updateProgramChips(activeProgram) {

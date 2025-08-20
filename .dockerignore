@@ -1,0 +1,58 @@
+# Docker ignore file for samfedbiz.com
+# Owner: Quartermasters FZC | Stakeholder: AXIVAI.COM
+
+# Git
+.git
+.gitignore
+
+# Environment files
+.env
+.env.local
+
+# Node modules (if any)
+node_modules/
+npm-debug.log*
+
+# Logs
+*.log
+logs/
+
+# Runtime data
+pids/
+*.pid
+*.seed
+
+# Coverage directory used by tools like istanbul
+coverage/
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp
+
+# Composer
+vendor/
+composer.lock
+
+# Cache
+cache/
+*.cache
+
+# Docker
+Dockerfile
+docker-compose*.yml
+.dockerignore

@@ -74,9 +74,9 @@
     width: 28px;
     height: 28px;
     border-radius: 50%;
-    background: rgba(11, 42, 74, 0.1);
-    border: 1px solid rgba(11, 42, 74, 0.2);
-    color: var(--color-primary);
+    background: var(--color-primary);
+    border: 1px solid var(--color-primary);
+    color: white;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -86,7 +86,8 @@
 }
 
 .chat-help:hover {
-    background: rgba(11, 42, 74, 0.2);
+    background: var(--color-secondary);
+    border-color: var(--color-secondary);
     transform: scale(1.1);
 }
 
@@ -255,7 +256,7 @@
 }
 
 .action-btn.primary {
-    background: var(--color-accent-positive);
+    background: #0D9488;
     color: white;
 }
 

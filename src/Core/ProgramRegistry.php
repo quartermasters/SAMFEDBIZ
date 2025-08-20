@@ -8,6 +8,7 @@
 
 namespace SamFedBiz\Core;
 
+use PDO;
 use SamFedBiz\Adapters\ProgramAdapterInterface;
 use SamFedBiz\Adapters\TLSAdapter;
 use SamFedBiz\Adapters\OASISPlusAdapter;
@@ -17,11 +18,39 @@ class ProgramRegistry
 {
     private array $adapters = [];
     private array $activePrograms = [];
+    private ?PDO $pdo = null;
 
-    public function __construct()
+    public function __construct(?PDO $pdo = null)
     {
+        $this->pdo = $pdo;
         $this->registerAdapters();
         $this->loadActivePrograms();
+    }
+
+    /**
+     * Normalize external program codes to internal keys
+     * Accepts aliases like 'oasis+' and maps to 'oasisplus'
+     */
+    public static function normalizeCode(string $code): string
+    {
+        $code = strtolower(trim($code));
+        return match ($code) {
+            'oasis+', 'oasis_plus' => 'oasisplus',
+            default => $code,
+        };
+    }
+
+    /**
+     * Get display-friendly program code for URLs/DB tags
+     * Maps internal 'oasisplus' -> 'oasis+'; others unchanged.
+     */
+    public static function getDisplayCode(string $code): string
+    {
+        $code = self::normalizeCode($code);
+        return match ($code) {
+            'oasisplus' => 'oasis+',
+            default => $code,
+        };
     }
 
     /**
@@ -31,8 +60,8 @@ class ProgramRegistry
     {
         $this->adapters = [
             'tls' => new TLSAdapter(),
-            'oasisplus' => new OASISPlusAdapter(),
-            'sewp' => new SEWPAdapter()
+            'oasisplus' => new OASISPlusAdapter($this->pdo),
+            'sewp' => new SEWPAdapter($this->pdo)
         ];
     }
 
@@ -57,6 +86,7 @@ class ProgramRegistry
      */
     public function getAdapter(string $code): ?ProgramAdapterInterface
     {
+        $code = self::normalizeCode($code);
         if (!$this->isActive($code)) {
             return null;
         }
@@ -86,6 +116,7 @@ class ProgramRegistry
      */
     public function isActive(string $code): bool
     {
+        $code = self::normalizeCode($code);
         return $this->activePrograms[$code] ?? false;
     }
 
@@ -97,6 +128,7 @@ class ProgramRegistry
      */
     public function toggleProgram(string $code, bool $active): bool
     {
+        $code = self::normalizeCode($code);
         if (!isset($this->adapters[$code])) {
             return false;
         }

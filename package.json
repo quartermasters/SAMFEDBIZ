@@ -1,0 +1,67 @@
+{
+  "name": "samfedbiz-platform",
+  "version": "1.0.0",
+  "description": "Federal BD Intelligence Platform",
+  "private": true,
+  "scripts": {
+    "quality:check": "./scripts/quality-gates.sh",
+    "quality:contrast": "node scripts/contrast-checker.js",
+    "lint:js": "eslint public/js --ext .js",
+    "lint:css": "stylelint public/styles/**/*.css",
+    "test": "npm run quality:check",
+    "build": "echo 'Build process completed'",
+    "dev": "echo 'Development server would start here'"
+  },
+  "devDependencies": {
+    "eslint": "^8.0.0",
+    "stylelint": "^15.0.0",
+    "stylelint-config-standard": "^34.0.0"
+  },
+  "eslintConfig": {
+    "env": {
+      "browser": true,
+      "es2021": true
+    },
+    "extends": [
+      "eslint:recommended"
+    ],
+    "parserOptions": {
+      "ecmaVersion": 12,
+      "sourceType": "module"
+    },
+    "rules": {
+      "no-unused-vars": "warn",
+      "no-console": "off",
+      "semi": ["error", "always"],
+      "quotes": ["error", "single"]
+    },
+    "globals": {
+      "gsap": "readonly",
+      "ScrollTrigger": "readonly",
+      "Lenis": "readonly",
+      "Chart": "readonly"
+    }
+  },
+  "stylelint": {
+    "extends": [
+      "stylelint-config-standard"
+    ],
+    "rules": {
+      "color-no-invalid-hex": true,
+      "unit-no-unknown": true,
+      "property-no-unknown": true,
+      "declaration-block-no-duplicate-properties": true,
+      "block-no-empty": true
+    }
+  },
+  "keywords": [
+    "federal",
+    "business-development",
+    "procurement",
+    "tls",
+    "oasis",
+    "sewp"
+  ],
+  "author": "Quartermasters FZC",
+  "license": "PROPRIETARY"
+}

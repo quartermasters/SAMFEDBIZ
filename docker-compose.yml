@@ -1,0 +1,126 @@
+# samfedbiz.com Docker Compose - Enhanced for Live Testing
+# Owner: Quartermasters FZC | Stakeholder: AXIVAI.COM
+# Federal BD Platform with Analytics, Quality Gates, SFBAI Chat
+
+version: '3.8'
+
+services:
+  # Web application with full platform features
+  app:
+    build: .
+    container_name: samfedbiz_app
+    ports:
+      - "8080:80"
+    volumes:
+      # Complete application mount for live testing
+      - .:/var/www/html
+      # Persistent data volumes
+      - app_logs:/var/log/samfedbiz
+      - app_reports:/var/www/html/reports
+      - app_storage:/var/www/html/storage
+      - app_build:/var/www/html/build
+    environment:
+      - APP_ENV=testing
+      - TIMEZONE=Asia/Dubai
+      - DB_HOST=db
+      - DB_NAME=samfedbiz
+      - DB_USER=samfedbiz_user
+      - DB_PASS=samfedbiz_pass_2025
+      - SMTP_HOST=mailhog
+      - SMTP_PORT=1025
+      - SMTP_USER=test@samfedbiz.com
+      - SMTP_PASS=testpass
+      # AI API keys (set from environment or leave empty for testing)
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - GEMINI_API_KEY=${GEMINI_API_KEY:-}
+      # Google OAuth (set from environment for calendar integration)
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID:-}
+      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET:-}
+      - GOOGLE_REDIRECT_URI=${GOOGLE_REDIRECT_URI:-http://localhost:8080/auth/google/callback}
+    depends_on:
+      - db
+      - mailhog
+    networks:
+      - samfedbiz_network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 90s
+
+  # MySQL database
+  db:
+    image: mysql:8.0
+    container_name: samfedbiz_db
+    restart: unless-stopped
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: samfedbiz
+      MYSQL_USER: samfedbiz_user
+      MYSQL_PASSWORD: samfedbiz_pass_2025
+      MYSQL_ROOT_PASSWORD: root_pass_2025
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./database/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql
+    networks:
+      - samfedbiz_network
+
+  # phpMyAdmin for database management
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: samfedbiz_phpmyadmin
+    restart: unless-stopped
+    ports:
+      - "8081:80"
+    environment:
+      PMA_HOST: db
+      PMA_USER: root
+      PMA_PASSWORD: root_pass_2025
+    depends_on:
+      - db
+    networks:
+      - samfedbiz_network
+
+  # MailHog for email testing (brief sending, outreach emails)
+  mailhog:
+    image: mailhog/mailhog
+    container_name: samfedbiz_mailhog
+    restart: unless-stopped
+    ports:
+      - "1025:1025"  # SMTP port
+      - "8025:8025"  # Web UI port - Access brief emails here
+    networks:
+      - samfedbiz_network
+
+  # Redis for caching (optional)
+  redis:
+    image: redis:7-alpine
+    container_name: samfedbiz_redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - samfedbiz_network
+
+volumes:
+  db_data:
+    driver: local
+  redis_data:
+    driver: local
+  app_logs:
+    driver: local
+  app_reports:
+    driver: local
+  app_storage:
+    driver: local
+  app_build:
+    driver: local
+
+networks:
+  samfedbiz_network:
+    driver: bridge

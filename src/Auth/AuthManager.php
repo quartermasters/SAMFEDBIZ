@@ -83,6 +83,31 @@ class AuthManager
     }
 
     /**
+     * Login user (wrapper for authenticate with remember functionality)
+     * @param string $email User email
+     * @param string $password Plain text password
+     * @param bool $remember Remember login for extended period
+     * @return bool Success
+     */
+    public function login(string $email, string $password, bool $remember = false): bool
+    {
+        $success = $this->authenticate($email, $password);
+        
+        if ($success && $remember) {
+            // Extend session lifetime for remember me
+            ini_set('session.gc_maxlifetime', 30 * 24 * 3600); // 30 days
+            session_set_cookie_params([
+                'lifetime' => 30 * 24 * 3600,
+                'httponly' => true,
+                'secure' => true,
+                'samesite' => 'Strict'
+            ]);
+        }
+        
+        return $success;
+    }
+
+    /**
      * Log out current user
      */
     public function logout(): void

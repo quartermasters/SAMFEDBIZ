@@ -2,7 +2,31 @@
   "permissions": {
     "allow": [
       "Bash(find:*)",
-      "Bash(php:*)"
+      "Bash(php:*)",
+      "Bash(grep:*)",
+      "Bash(mkdir:*)",
+      "Bash(chmod:*)",
+      "Bash(docker-compose:*)",
+      "Bash(./scripts/quality-gates.sh:*)",
+      "Bash(rm:*)",
+      "Bash(./scripts/build-production.sh:*)",
+      "Bash(node:*)",
+      "Bash(docker compose:*)",
+      "Bash(python3:*)",
+      "Bash(docker build:*)",
+      "Bash(killall:*)",
+      "Bash(true)",
+      "Bash(curl:*)",
+      "Bash(touch:*)",
+      "Bash(for page in programs briefs analytics settings research solicitations)",
+      "Bash(do echo -n \"$page: \")",
+      "Bash(done)",
+      "Bash(for page in \"\" programs briefs analytics settings research solicitations)",
+      "Bash(do echo -n \"✓ /$page - \")",
+      "Bash(for api in api/ai/chat.php)",
+      "Bash(do echo -n \"✓ /$api - \")",
+      "Bash(pkill:*)",
+      "Bash(mv:*)"
     ],
     "deny": [],
     "ask": []
